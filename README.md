@@ -433,3 +433,131 @@ app.post("/submit", (req, res) => {
 
 Můžeme odeslat ještě další dva pokusy, abychom soubor naplnili větším počtem záznamů. 
 
+---
+### Výpis výsledků ankety
+
+Pro výpis výsledků ankety v podobě tabulky, která obsahuje všechna uložená data, můžete postupovat následovně. Vytvoříme EJS šablonu, která projde uložená data v responses.json a dynamicky vygeneruje tabulku. Datum a čas budou zobrazeny ve formátu běžném pro české prostředí, tedy dd.mm.yyyy hh:mm:ss.
+
+1. **Čtení dat ze souboru**:
+
+Nejprve musíme načíst data z `responses.json` na serveru v souboru `index.js`, když uživatel přistoupí na stránku s výsledky. Tato data poté předáme do *EJS šablony* `results.ejs`.
+
+```
+/* Routa pro zobrazení výsledků ankety */
+app.get("/results", (req, res) => {
+  // Zde bude načtení dat ze souboru responses.json a jejich předání do šablony
+  fs.readFile('responses.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Nastala chyba při čtení dat.');
+    }
+    const responses = JSON.parse(data);
+    res.render('results', { responses }); // Předání dat-odpovědí šabloně results.ejs
+  });
+});
+```
+2. **Zobrazení výsledků v šabloně**:
+
+Nyní upravíme soubor `results.ejs` ve složce `views` tak, aby obsahoval kód pro vykreslení tabulky. Využijeme k tomu možnosti šablonovacího systému **EJS**:
+
+[Dokumentace k `EJS`](https://ejs.co/#docs)
+
+Pro konverzi data a času z ISO formátu do českého formátu můžete použít nativní JS funkci `Date` a její metody pro získání jednotlivých částí data a času. V produkčním prostředí můžete zvážit použití knihoven jako je [`Moment.js`](https://momentjs.com/).
+
+*Úprava results.ejs*
+```
+... 
+    <h1>Výsledky ankety</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Datum</th>
+            <th>Čas</th>
+            <th>Hodiny týdně</th>
+            <th>Zaměření TV</th>
+            <th>Význam sportu</th>
+            <th>Sportovní vzor</th>
+        </tr>
+        <% responses.forEach(function(response) { 
+            const date = new Date(response.timestamp);
+            const dateString = `${('0' + date.getDate()).slice(-2)}.${('0' + (date.getMonth() + 1)).slice(-2)}.${date.getFullYear()}`;
+            const timeString = `${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}:${('0' + date.getSeconds()).slice(-2)}`;
+        %>
+            <tr>
+                <td><%= response.id %></td>
+                <td><%= dateString %></td>
+                <td><%= timeString %></td>
+                <td><%= response.answers.hours %></td>
+                <td><%= response.answers.sport %></td>
+                <td><%= response.answers.importance %></td>
+                <td><%= response.answers.roleModel %></td>
+            </tr>
+        <% }); %>
+    </table>    
+...    
+```
+
+Tento kód projde pole `responses`, které bylo předáno do šablony z našeho serveru, a pro každou odpověď vygeneruje řádek v tabulce. Datum a čas jsou formátovány do českého standardu. 
+
+*Zobrazení výsledků ankety:*
+![Výsledky ankety](./docs/img/results-02.png)
+
+3. **Úprava vzhledu tabulky s výsledky**:
+
+Pro vylepšení vzhledu tabulky s výsledky ankety pomocí CSS můžete použít následující CSS pravidla. Tato pravidla přidávají stylování pro lepší čitelnost a estetický vzhled tabulky, včetně zarovnání obsahu, zvýraznění řádků při najetí myši, a ohraničení buněk.
+
+```
+... 
+/* Úprava vzhledu tabulky */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+/* Přidáváme trochu paddingu na stránky pro lepší vzhled */
+.container {
+    max-width: 960px;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+...   
+```
+
+Třídu `.container` můžeme v souboru `results.ejs` použít ve značce `<div class="container">`, kterou "obalíme" celou tabulku:
+
+```
+... 
+    <div class="container">
+        <table>
+          ... 
+        </table>
+    </div>    
+...     
+```
+
+*Upravená tabulka vypadá takto:*
+![Výsledky ankety](./docs/img/results-03.png)

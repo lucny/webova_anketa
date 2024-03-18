@@ -8,5 +8,33 @@
 </head>
 <body>
     <h1>Výsledky ankety</h1>
+    <div class="container">
+        <table>
+        <tr>
+            <th>ID</th>
+            <th>Datum</th>
+            <th>Čas</th>
+            <th>Hodiny týdně</th>
+            <th>Zaměření TV</th>
+            <th>Význam sportu</th>
+            <th>Sportovní vzor</th>
+        </tr>
+        <% responses.forEach(function(response) { 
+            const date = new Date(response.timestamp);
+            const dateString = `${('0' + date.getDate()).slice(-2)}.${('0' + (date.getMonth() + 1)).slice(-2)}.${date.getFullYear()}`;
+            const timeString = `${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}:${('0' + date.getSeconds()).slice(-2)}`;
+        %>
+            <tr>
+                <td><%= response.id %></td>
+                <td><%= dateString %></td>
+                <td><%= timeString %></td>
+                <td><%= response.answers.hours %></td>
+                <td><%= response.answers.sport %></td>
+                <td><%= response.answers.importance %></td>
+                <td><%= response.answers.roleModel %></td>
+            </tr>
+        <% }); %>
+        </table>
+    </div>    
 </body>
 </html>

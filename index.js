@@ -41,7 +41,14 @@ app.post("/submit", (req, res) => {
 /* Routa pro zobrazení výsledků ankety */
 app.get("/results", (req, res) => {
   // Zde bude načtení dat ze souboru responses.json a jejich předání do šablony
-  res.render("results", { title: "Výsledky ankety" }); // results.ejs je soubor šablony
+  fs.readFile('responses.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Nastala chyba při čtení dat.');
+    }
+    const responses = JSON.parse(data);
+    res.render('results', { responses }); // Předání dat-odpovědí šabloně results.ejs
+  });
 });
 
 app.listen(PORT, () => {

@@ -7,6 +7,49 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Webová anketa</h1>
+    <h1>Anketa o sportu a pohybu</h1>
+    <form action="/submit" method="post" class="form-container">
+        <div>
+            <label for="hours">Průměrný počet hodin, které týdně věnujete sportu nebo jiné pohybové aktivitě:</label>
+            <input type="number" step="0.1" id="hours" name="hours" required>
+        </div>
+        
+        <div>
+            <label>Vyberte si sport pro hodinu tělocviku:</label>
+            <select id="sport" name="sport">
+                <option value="atletika">Atletika</option>
+                <option value="gymnastika">Gymnastika</option>
+                <option value="plavání">Plavání</option>
+                <option value="cyklistika">Cyklistika</option>
+                <option value="bruslení">Bruslení</option>
+                <option value="lyžování">Lyžování</option>
+                <option value="volejbal">Volejbal</option>
+                <option value="florbal">Florbal</option>
+                <option value="golf">Golf</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="importance">Jakou roli hraje sport ve vašem životě? (0 = žádnou, 5 = mimořádnou)</label>
+            <input type="range" id="importance" name="importance" min="0" max="5" step="1">
+            <span id="importanceValue"></span>
+        </div>
+        
+        <div>
+            <label for="roleModel">Napište jméno svého sportovního vzoru:</label>
+            <input type="text" id="roleModel" name="roleModel">
+        </div>
+        
+        <button type="submit">Odeslat odpovědi</button>
+    </form>
+    <script>
+        const slider = document.getElementById('importance');
+        const output = document.getElementById('importanceValue');
+        output.innerHTML = slider.value; // Zobrazit výchozí hodnotu
+      
+        slider.oninput = function() {
+          output.innerHTML = this.value;
+        }
+    </script>
 </body>
 </html>

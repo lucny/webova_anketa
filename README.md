@@ -171,4 +171,191 @@ Naučte se používat jazyk [markdown](https://www.markdownguide.org/cheat-sheet
    [http://localhost:3000/results](http://localhost:3000/results)
    ![Stránka s výsledky](./docs/img/results-01.png)
 
+---
+### Vytvoření formuláře na domovské stránce
+1. **Návrh ankety**: 
+Zamýšlená anketa bude zaměřena na význam sportu a pohybu v životě studentů. Součástí ankety budou následujcí typy otázek:
+- Průměrný počet hodin, které týdně věnujete sportu nebo pohybu (desetinné číslo, jedno desetinné místo )
+- Vyberte si sport pro hodinu tělocviku. (volby: atletika, gymnastika, plavání, cyklistika, bruslení, lyžování, volejbal, florbal, golf)
+- Jakou roli hraje sport ve vašem životě? (škála 0 až 5, 0 - žádnou, 5 - mimořádnou)
+- Napište jméno svého sportovního vzoru. (krátký text)
+2. **Vytvoření formuláře**: V šabloně `index.ejs` vytvořte formulář s prvky, které odpovídají návrhu ankety:
+    ```
+    <h1>Anketa o sportu a pohybu</h1>
+    <form action="/submit" method="post" class="form-container">
+        <div>
+            <label for="hours">Průměrný počet hodin, které týdně věnujete sportu nebo jiné pohybové aktivitě:</label>
+            <input type="number" step="0.1" id="hours" name="hours" required>
+        </div>
+        
+        <div>
+            <label>Vyberte si sport pro hodinu tělocviku:</label>
+            <select id="sport" name="sport">
+                <option value="atletika">Atletika</option>
+                <option value="gymnastika">Gymnastika</option>
+                <option value="plavání">Plavání</option>
+                <option value="cyklistika">Cyklistika</option>
+                <option value="bruslení">Bruslení</option>
+                <option value="lyžování">Lyžování</option>
+                <option value="volejbal">Volejbal</option>
+                <option value="florbal">Florbal</option>
+                <option value="golf">Golf</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="importance">Jakou roli hraje sport ve vašem životě? (0 = žádnou, 5 = mimořádnou)</label>
+            <input type="range" id="importance" name="importance" min="0" max="5" step="1">
+        </div>
+        
+        <div>
+            <label for="roleModel">Napište jméno svého sportovního vzoru:</label>
+            <input type="text" id="roleModel" name="roleModel">
+        </div>
+        
+        <button type="submit">Odeslat odpovědi</button>
+    </form>
+    ```
 
+V tomto formuláři:
+
+- První otázka požaduje od respondentů zadání průměrného počtu hodin věnovaných sportu nebo pohybové aktivitě za týden. 
+Využívá `<input type="number">` s krokem 0.1 pro možnost zadání desetinných čísel.
+- Druhá otázka umožňuje výběr z několika sportů, které by studenti mohli chtít mít na hodinách tělesné výchovy. Používá `<select>` element pro výběr jedné možnosti.
+- Třetí otázka se ptá na význam sportu v životě studenta s použitím `<input type="range">`, což umožňuje vybrat hodnotu na škále od 0 do 5.
+- Čtvrtá otázka je otevřená a žádá o zadání jména sportovního vzoru. Používá `<input type="text">` pro krátkou textovou odpověď.
+
+Po zadání: [http://localhost:3000/](http://localhost:3000/) se objeví tato podoba úvodní stránky:
+   ![Domovská stránka](./docs/img/homepage-02.png)
+
+3. **Interaktivita formuláře**: Ve formuláři chybí u třetí otázky (prvek `<input type="range">`) číselné zobrazení hodnoty, kterou si uživatel vybral. 
+
+    *Řešení:*
+
+    Pro zobrazení průběžně vybrané hodnoty u prvku s id="importance" (což by v našem případě mohla být škála od 0 do 5 pro otázku o roli sportu v životě respondentů) můžete použít JavaScript k aktualizaci textu nebo jiného elementu na stránce, který bude zobrazovat vybranou hodnotu.
+
+    Zde je příklad, jak toho dosáhnout:
+
+    Přidání elementu pro zobrazení vybrané hodnoty: Do vašeho formuláře v index.ejs (nebo jiného relevantního souboru) přidejte element, kam bude JavaScript vypisovat vybranou hodnotu. Tento element může být `<span>`, `<div>` nebo jakýkoliv jiný vhodný HTML element. Přidejte mu unikátní `id` pro snadný přístup pomocí JavaScriptu.
+
+    ```
+    <label for="importance">Jakou roli hraje sport ve vašem životě? (škála 0 až 5): </label>
+    <input type="range" id="importance" name="importance" min="0" max="5" step="1">
+    <span id="importanceValue"></span>
+    ```
+
+    Přidání JavaScriptu pro aktualizaci hodnoty: Do souboru `index.ejs` přidejte na konci těla stránky následující JS kód. Tento kód bude poslouchat na události změny (`change` a `input`) u `<input type="range">` a aktualizovat text elementu, který má `id="importanceValue"`, na aktuálně vybranou hodnotu.
+
+    ```
+    <script>
+    const slider = document.getElementById('importance');
+    const output = document.getElementById('importanceValue');
+    output.innerHTML = slider.value; // Zobrazit výchozí hodnotu
+
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+    }
+    </script>
+    ```
+
+    V tomto příkladu, kdykoliv uživatel posune posuvník, hodnota uvnitř elementu s `id="importanceValue"` se aktualizuje na aktuálně vybranou hodnotu. Kód `slider.oninput = function() {...}` zajišťuje, že se hodnota aktualizuje v reálném čase, jakmile uživatel posouvá posuvník, což poskytuje okamžitou zpětnou vazbu.
+
+    Tento přístup můžete použít pro jakýkoliv prvek formuláře, u kterého chcete zobrazovat průběžně vybranou nebo zadanou hodnotu, a lze ho jednoduše přizpůsobit pro různé typy vstupních prvků.
+
+    Po zadání: [http://localhost:3000/](http://localhost:3000/) se objeví upravená podoba úvodní stránky (červeně je zvýrazněn přidaný prvek):
+   ![Domovská stránka](./docs/img/homepage-03.png)
+
+4. **Úprava vzhledu formuláře**: 
+
+Pro hezkou a moderní úpravu formuláře můžeme použít CSS, které zvýrazní jednotlivé prvky formuláře, zlepší celkovou čitelnost a zvýší uživatelský komfort. Zde je několik CSS pravidel, které můžete přidat do souboru `styles.css` ve složce `public`. 
+
+```
+... 
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type=text],
+input[type=number],
+select,
+input[type=range] {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 8px;
+    border-radius: 5px;
+    background: #ddd;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+input[type=submit] {
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+#importanceValue {
+    margin-left: 10px;
+    font-weight: bold;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+}
+```
+
+Tento CSS kód poskytuje základní styly pro formulář a jeho prvky, včetně zlepšení vzhledu posuvníku a tlačítka pro odeslání. U posuvníku (`input[type=range]`) jsme odstranili výchozí vzhled a přidali vlastní styly pro lepší vizuální prezentaci.
+
+Pamatujte, že tyto styly jsou jen základem a můžete je dále přizpůsobit podle potřeb vašeho formuláře a celkového designu webu. Můžete například upravit barvy, fonty nebo okraje, aby lépe odpovídaly vaší značce nebo preferencím.
+
+    Po zadání: [http://localhost:3000/](http://localhost:3000/) se objeví upravená podoba formuláře, který můžeme zkusit vyplnit údaji:
+   ![Domovská stránka](./docs/img/homepage-04.png)

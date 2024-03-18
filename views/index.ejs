@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Anketa o sportu a pohybu</h1>
+    <%- include('blocks/header'); -%>
+    <h2>Anketa o sportu a pohybu</h2>
     <form action="/submit" method="post" class="form-container">
         <div>
             <label for="hours">Průměrný počet hodin, které týdně věnujete sportu nebo jiné pohybové aktivitě:</label>
@@ -42,6 +43,7 @@
         
         <button type="submit">Odeslat odpovědi</button>
     </form>
+    <%- include('blocks/footer'); -%>
     <script>
         const slider = document.getElementById('importance');
         const output = document.getElementById('importanceValue');

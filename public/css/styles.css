@@ -15,6 +15,12 @@ h1 {
     text-align: center;
 }
 
+h2 {
+    color: #2955b4;
+    text-align: center;
+    text-transform: uppercase;
+}
+
 
 .form-container {
     background-color: #fff;
@@ -132,4 +138,15 @@ tr:hover {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
+}
+
+/* Footer */
+footer {
+    background-color: #666;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }

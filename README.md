@@ -561,3 +561,64 @@ Třídu `.container` můžeme v souboru `results.ejs` použít ve značce `<div 
 
 *Upravená tabulka vypadá takto:*
 ![Výsledky ankety](./docs/img/results-03.png)
+
+---
+### Bloky v šabloně EJS
+
+Vnoření bloků v EJS umožňuje rozdělit EJS šablony na menší, opakovaně použitelné části. Tento přístup vám umožní udržet vaše kódové základy přehledné a snadno udržovatelné, protože můžete oddělit logické části vašeho webu do samostatných souborů, které pak můžete znovu vkládat do různých šablon.
+
+*Výhody vnoření bloků*
+
+- *Údržba:* Snadnější údržba a aktualizace, protože změny v opakovaně použitelných komponentách se projeví ve všech šablonách, kde jsou tyto komponenty vloženy.
+- *Přehlednost:* Udržuje hlavní šablony čisté a přehledné tím, že odstraňuje opakovaný kód a umožňuje soustředit se na specifický obsah dané stránky.
+- *Opakované použití:* Umožňuje snadné opakované použití kódu napříč projektem bez nutnosti kopírování a vkládání.
+
+1. **Vytvoření samostatných bloků pro header a footer**:
+
+Typické využití je mít v aplikaci společný header a footer. Tyto části můžete umístit do samostatných souborů, například `views/blocks/header.ejs` a `views/blocks/footer.ejs`, a vložit je do každé stránky:
+
+*header.ejs*
+```
+<header>
+    <h1><%= title %></h1>
+</header>
+```
+
+*footer.ejs*
+```
+<footer>
+    <p>&copy; 2024 Marek Lučný, pro třídu IT2 do předmětu PVY</p>
+    <p><img src="images/skola-logo.png" alt="Logo SŠPU"></p>
+</footer>
+```
+
+Obrázek školního loga je v tomto případě třeba umístit do složky `images`, která je podsložkou `public`.
+
+2. **Použití bloků v šablonách**:
+
+Připravené bloky můžeme připojit v šablonách `index.ejs` a `results.ejs` tímto způsobem:
+
+```
+<%- include('blocks/header'); -%>
+<!-- Obsah stránky -->
+<%- include('blocks/footer'); -%>
+```
+3. **Předávání titulku/nadpisu šabloně**
+
+S ohledem na strukturu bloku/šablony `header.ejs` je nutné v `index.js` předávat proměnnou `title` při renderování šablon index a results:
+
+```
+... 
+res.render("index", { title: "Webová anketa" }); 
+... 
+res.render('results', { title: "Výsledky ankety", responses });
+... 
+```
+
+Po této úpravě a po dalších úpravách CSS mohou být stránky v takové podobě:
+
+*Úvodní stránka:*
+![Úvodní stránka - konečná podoba](./docs/img/homepage-05.png)
+
+*Stránka s výsledky:*
+![Výsledky ankety - konečná podoba](./docs/img/results-04.png)

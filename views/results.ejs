@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Výsledky ankety</h1>
+    <%- include('blocks/header'); -%>
     <div class="container">
         <table>
         <tr>
@@ -35,6 +35,7 @@
             </tr>
         <% }); %>
         </table>
-    </div>    
+    </div>  
+    <%- include('blocks/footer'); -%>  
 </body>
 </html>

@@ -47,7 +47,7 @@ app.get("/results", (req, res) => {
       return res.status(500).send('Nastala chyba při čtení dat.');
     }
     const responses = JSON.parse(data);
-    res.render('results', { responses }); // Předání dat-odpovědí šabloně results.ejs
+    res.render('results', { title: "Výsledky ankety", responses }); // Předání dat-odpovědí šabloně results.ejs
   });
 });
 

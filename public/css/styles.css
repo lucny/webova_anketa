@@ -1,0 +1,15 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+
+h1 {
+    color: white;
+    background-color: blue;
+    font-size: 30pt;
+    padding: 10px;
+    margin: 0;
+}

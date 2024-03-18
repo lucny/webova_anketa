@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1710794019428,
+    "timestamp": "2024-03-18T20:33:39.428Z",
+    "answers": {
+      "hours": "6.5",
+      "sport": "lyžování",
+      "importance": "4",
+      "roleModel": "Ester Ledecká"
+    }
+  },
+  {
+    "id": 1710795150000,
+    "timestamp": "2024-03-18T20:52:30.000Z",
+    "answers": {
+      "hours": "9",
+      "sport": "atletika",
+      "importance": "5",
+      "roleModel": "Noah Lyles"
+    }
+  },
+  {
+    "id": 1710795194508,
+    "timestamp": "2024-03-18T20:53:14.508Z",
+    "answers": {
+      "hours": "5",
+      "sport": "golf",
+      "importance": "2",
+      "roleModel": "Jaromír Jágr"
+    }
+  }
+]

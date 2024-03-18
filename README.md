@@ -359,3 +359,77 @@ Pamatujte, že tyto styly jsou jen základem a můžete je dále přizpůsobit p
 
     Po zadání: [http://localhost:3000/](http://localhost:3000/) se objeví upravená podoba formuláře, který můžeme zkusit vyplnit údaji:
    ![Domovská stránka](./docs/img/homepage-04.png)
+
+---
+### Uložení dat na serveru
+
+Pro uložení odpovědí z ankety do souboru `responses.json` vytvoříme v naší Node.js aplikaci funkci, která zpracuje data odeslaná z formuláře, přidá je do stávajícího seznamu odpovědí v souboru responses.json a ten aktualizuje. Tento proces zahrnuje čtení souboru, parsování JSON dat, přidání nové odpovědi a opětovné uložení dat do souboru.
+
+1. **Vytvoření JSON souboru**: V kořenové složce našeho webu vytvoříme soubor `responses.json`, který bude na začátku obsahovat poze prázdné hranaté závorky (prázdné pole):
+
+ *responses.json*
+ ```
+ []
+ ```
+
+Do tohoto souboru bude serverová aplikace postupně zapisovat datové objekty. 
+
+2. **Ukládání dat do souboru**: V souboru `server.js`, implementujme logiku pro zpracování POST požadavku z formuláře:
+
+```
+... 
+/* Routa pro zpracování dat z formuláře */
+app.post("/submit", (req, res) => {
+  // Zde budeme ukládat data z formuláře do souboru responses.json
+  const newResponse = {
+    id: Date.now(), // Jednoduchý způsob, jak generovat unikátní ID
+    timestamp: new Date().toISOString(),
+    answers: req.body, // Předpokládáme, že všechny odpovědi jsou ve formátu, který chceme uložit
+  };
+
+  // Čtení stávajících dat z souboru
+  fs.readFile("responses.json", (err, data) => {
+    if (err) throw err;
+    let json = JSON.parse(data);
+    json.push(newResponse);
+
+    // Zápis aktualizovaných dat zpět do souboru
+    fs.writeFile("responses.json", JSON.stringify(json, null, 2), (err) => {
+      if (err) throw err;
+      console.log("Data byla úspěšně uložena.");
+      res.redirect("/results"); // Přesměrování na stránku s výsledky
+    });
+  });
+});
+... 
+```
+
+*Poznámky k řešení:*
+- *ID ankety*: V tomto příkladu generujeme ID ankety použitím časového razítka `Date.now()`. Toto není nejlepší řešení pro všechny případy, zejména pokud je aplikace používána ve velkém měřítku, ale pro účely ukázky je to dostatečné.
+- *Timestamp*: Přidáváme timestamp kdy byla anketa odeslána, což pomáhá s organizací a analýzou dat.
+- *Přesměrování na stránku s výsledky*: Po uložení dat přesměrujeme uživatele na stránku s výsledky, což uživatelům umožňuje vidět agregované výsledky ankety.
+- *Zpracování chyb*: Jednoduché zpracování chyb je implementováno, ale pro produkční použití byste měli zvážit robustnější řešení.
+
+3. **Ověření funkčnosti**:
+- Restartujeme server. 
+- V prohlížeči vyvoláme domovskou stránku a vyplníme formulář daty. 
+- Po odeslání formuláře by se v případě úspěchu měla objevit zatím prázdná stránka s výsledky. 
+- Soubor `responses.json` by měl obsahovat první datový objekt:
+
+```
+[
+  {
+    "id": 1710794019428,
+    "timestamp": "2024-03-18T20:33:39.428Z",
+    "answers": {
+      "hours": "6.5",
+      "sport": "lyžování",
+      "importance": "4",
+      "roleModel": "Ester Ledecká"
+    }
+  }
+]
+```
+
+Můžeme odeslat ještě další dva pokusy, abychom soubor naplnili větším počtem záznamů. 
+
